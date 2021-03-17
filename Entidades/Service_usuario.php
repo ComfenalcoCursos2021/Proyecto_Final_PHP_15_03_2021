@@ -1,6 +1,6 @@
 <?php
 
-    class Service_usuario{
+    class Service_usuario implements Mensajes,Plantilla{
         static $serviceUsuario;
         public $plantilla;
         static public function getInstance(){
@@ -11,7 +11,11 @@
         }
         public function saludar(){
             $this->plantilla = <<<FIN
-            <h1>Miguel Angel Castro Escamilla</h1>     
+            <div class="container">
+                <div class="row py-3 text-white">
+                {join(" ", $this::service['usuarioSaludar'])}}
+                </div>
+            </div>
 FIN;
             return $this->plantilla;
         } 

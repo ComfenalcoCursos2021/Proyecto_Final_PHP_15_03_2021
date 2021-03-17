@@ -14,6 +14,7 @@ $(document).ready(function () {
         },
         success: function (res) {
             console.log(res);
+        //    $("#prueba").html(res);
         },
     });
     // $.ajax({
@@ -26,7 +27,7 @@ $(document).ready(function () {
     //         HTTPS_METODO : "ejemplo"
     //     },
     //     success: function (res) {
-    //         console.log(JSON.parse(res));
+    //         console.log(res);
     //     },
     // });
 

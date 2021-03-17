@@ -1,6 +1,6 @@
 <?php
 
-    class serviceToken implements Clases,Metodos{
+    class serviceToken implements Metodos,Mensajes{
         static $ServiceToken;
         private $archivo;
         private $metodo;
@@ -16,13 +16,13 @@
                         if(array_key_exists(0,self::$ServiceToken->getMetodo())){
                             return call_user_func_array(array(self::$ServiceToken->getArchivo()[0]::getInstance(), self::$ServiceToken->getMetodo()[0]), [null]);
                         }else{
-                            return "El token enviado no coincide con ningun metodo a ejecutar";
+                            return self::informacion["metodoToken"];
                         }
                     }else{
-                        return "El token del archivo a solicitar no se encuentra en uso en este momento";
+                        return self::informacion["archivo"];
                     }
                 }else{
-                    return "El token enviado no coincide con ningun archivo";
+                    return self::informacion["claseToken"];
                 }    
             }
         }
