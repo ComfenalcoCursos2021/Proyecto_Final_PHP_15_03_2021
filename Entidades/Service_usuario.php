@@ -7,18 +7,16 @@
             if(!(self::$serviceUsuario instanceof self)){
                 self::$serviceUsuario = new Service_usuario();
             }
-            return self::$serviceUsuario;
+            return self::$serviceUsuario; 
         }
-        public static function saludar(){
+        public function saludar(){
             $this->plantilla = <<<FIN
             <h1>Miguel Angel Castro Escamilla</h1>     
 FIN;
             return $this->plantilla;
-        }
+        } 
         // function __destruct() {
         //     self::$plantilla = null;
         // }
     }
-
-
 ?>

@@ -9,8 +9,21 @@
                 self::$ServiceToken = new serviceToken();
                 self::$ServiceToken->setArchivo($Clase);
                 self::$ServiceToken->setMetodo($Metodo);
-                include_once("Entidades/".self::$ServiceToken->getArchivo().".php");
-                return call_user_func_array(array(self::$ServiceToken->getArchivo()::getInstance(), self::$ServiceToken->getMetodo()), [null]);
+                if(array_key_exists(0,self::$ServiceToken->getArchivo())){
+                    define("path", "Entidades/".self::$ServiceToken->getArchivo()[0].".php");
+                    if(file_exists(path)){
+                        include_once(path);
+                        if(array_key_exists(0,self::$ServiceToken->getMetodo())){
+                            return call_user_func_array(array(self::$ServiceToken->getArchivo()[0]::getInstance(), self::$ServiceToken->getMetodo()[0]), [null]);
+                        }else{
+                            return "El token enviado no coincide con ningun metodo a ejecutar";
+                        }
+                    }else{
+                        return "El token del archivo a solicitar no se encuentra en uso en este momento";
+                    }
+                }else{
+                    return "El token enviado no coincide con ningun archivo";
+                }    
             }
         }
         function __destruct() {
@@ -23,7 +36,7 @@
             return $this->Archivo($token);
         }
         private function Archivo($token){
-            $this->archivo = array_keys(self::token_class, $token)[0];
+            $this->archivo = array_keys(self::token_class, $token);
             return $this->archivo;
         }
         public function getMetodo(){
@@ -33,7 +46,7 @@
             return $this->Metodo($token);
         }
         private function Metodo($token){
-            $this->metodo = array_keys(self::token_metodos, $token)[0];
+            $this->metodo = array_keys(self::token_metodos, $token);
             return $this->metodo;
         }
         

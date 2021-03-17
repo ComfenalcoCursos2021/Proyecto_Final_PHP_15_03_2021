@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    let endpoint = "https://pruebacofenalco.000webhostapp.com/Proyecto_Final_PHP_15_03_2021/Api.php";
+    let endpoint = "Api.php";
    
     $.ajax({
         url: endpoint,
@@ -7,16 +7,28 @@ $(document).ready(function () {
         accepts: "application/json",
         crossDomain: true,
         data:{
-            HTTPS_GET : "token",
             HTTPS_CLASE_MARCA : "seeq/1R.aEYuQ",
             HTTPS_CLASE : "$2y$10$IZWalCdInZzIilt2dG0/3.B4enMRTHGH1vAZkw1ATlfNpbAhtAMpO",
-            HTTPS_METODO_MARCA : "saKPNKgP0PWD.",
-            HTTPS_METODO : "$2y$09$i1x9DkntoU2S0i9MdbB3wO8QfnEBdObkQQ9tXLYPZW.D9YHLe8PZW"
+            HTTPS_METODO_MARCA : "ej/R8CVHmaH/w",
+            HTTPS_METODO : "$2y$12$e/FuS0461cTjQ1DU9XqEmerkOWF0oziDrjQwE8U/9SBou86M9ka2m"
         },
         success: function (res) {
-            document.write(res);
+            console.log(res);
         },
     });
+    // $.ajax({
+    //     url: endpoint,
+    //     type: 'GET',
+    //     accepts: "application/json",
+    //     crossDomain: true,
+    //     data:{
+    //         HTTPS_ARCHIVO : "service_ejemplo",
+    //         HTTPS_METODO : "ejemplo"
+    //     },
+    //     success: function (res) {
+    //         console.log(JSON.parse(res));
+    //     },
+    // });
 
 
 });

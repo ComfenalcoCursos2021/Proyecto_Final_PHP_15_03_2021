@@ -1,5 +1,5 @@
 <?php
-
+    
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Method: GET, POST");
     header("Access-Control-Allow-Headers: * Access-Control-Request-Method");
@@ -7,23 +7,28 @@
     class servicioApi{
         static $ServicioApi;
         private $respuesta;
+        protected $validarEncabezados;
         public function __construct(){
-            
+            $this->validarEncabezados = (array) [
+                "POST" => (array) [
+                    "HTTPS_CLASE_MARCA" => null,
+                    "HTTPS_CLASE" => null,
+                    "HTTPS_METODO_MARCA" => null,
+                    "HTTPS_METODO" => null
+                ],
+                "GET" => (array) [
+                    "HTTPS_ARCHIVO" => null,
+                    "HTTPS_METODO" => null,
+                ],
+            ];
         }
-        private function verificarToken($token){
-            if (password_verify($token["CLASE_TOKEN"]["Marca"], $token["CLASE_TOKEN"]["Token"]) && password_verify($token["METODO_TOKEN"]["Marca"], $token["METODO_TOKEN"]["Token"])) {
-                include_once("Token/Service_key.php");
-                include_once("Token/Service_token.php");
-                $this->respuesta = serviceToken::getInstance($token["CLASE_TOKEN"]["Token"],$token["METODO_TOKEN"]["Token"]);
-            } else {
-                $this->respuesta = "xxxxx";
+        static public function getInstance(){
+            if(!(self::$ServicioApi instanceof self)){
+                self::$ServicioApi = new servicioApi();
+            }else{
+                // call_user_func_array(array(self::$ServicioApi, "setnombre"), [$p1]);
             }
-        }
-        public function setRespuesta($token){
-            $this->verificarToken($token);
-        }
-        public function getRespuesta(){
-            return $this->respuesta;
+            return self::$ServicioApi;
         }
         public function token($Clase, $Metodos){
             $mardaAgua = (string) $_SERVER["REQUEST_TIME"];
@@ -41,31 +46,41 @@
             }
             return $cadena;
         }
-        
-        static public function getInstance(){
-            if(!(self::$ServicioApi instanceof self)){
-                self::$ServicioApi = new servicioApi();
-            }else{
-                // call_user_func_array(array(self::$ServicioApi, "setnombre"), [$p1]);
+        public function setRespuesta($_DATA){
+            $this->verificarToken($_DATA);
+        }
+        public function getRespuesta(){
+            return $this->respuesta;
+        }
+        private function verificarToken($_DATA){
+            if (password_verify($this->validarEncabezados[$_DATA]["HTTPS_CLASE_MARCA"], $this->validarEncabezados[$_DATA]["HTTPS_CLASE"]) && password_verify($this->validarEncabezados[$_DATA]["HTTPS_METODO_MARCA"], $this->validarEncabezados[$_DATA]["HTTPS_METODO"])) {
+                include_once("Token/Service_key.php");
+                include_once("Token/Service_token.php");
+                $this->respuesta = serviceToken::getInstance($this->validarEncabezados[$_DATA]["HTTPS_CLASE"],$this->validarEncabezados[$_DATA]["HTTPS_METODO"]);
+            } else {
+                $this->respuesta = "La clase o el metodo no coincide";
             }
-            return self::$ServicioApi;
+        }
+        public function setAcceso($_DATA){
+            $this->validarEncabezados[$_DATA] = array_merge($this->validarEncabezados[$_DATA], $_REQUEST);
+            return (!count(array_keys($this->validarEncabezados[$_DATA], null))) ? $this->acceso($_DATA) : ["Mensaje"=>"Los encabezados que te faltan son: ".join(",",array_keys($this->validarEncabezados[$_DATA], null))." en la peticion $_DATA"]; 
+        }
+        private function acceso($_DATA){
+            switch ($_DATA) {
+                case 'POST':
+                    call_user_func_array(array(servicioApi::getInstance(), "setRespuesta"), [$_DATA]);
+                    return [call_user_func_array(array(servicioApi::getInstance(), "getRespuesta"), [null])];
+                break;
+                case 'GET':
+                    return [call_user_func_array(array(servicioApi::getInstance(), "token"), [$_REQUEST["HTTPS_ARCHIVO"],  $_REQUEST["HTTPS_METODO"]])];
+                    break;
+            }
+            
         }
         function __destruct() {
             $this->respuesta = null;
         }
     }
-   
-    $data = (array) [
-        "CLASE_TOKEN" => (array) [
-            "Marca" => $_REQUEST["HTTPS_CLASE_MARCA"],
-            "Token" => $_REQUEST["HTTPS_CLASE"]
-        ],
-        "METODO_TOKEN" => (array) [
-            "Marca" => $_REQUEST["HTTPS_METODO_MARCA"],
-            "Token" => $_REQUEST["HTTPS_METODO"]
-        ]
-    ];
-    print_r(call_user_func_array(array(servicioApi::getInstance(), "setRespuesta"), [$data]));
-    print_r(call_user_func_array(array(servicioApi::getInstance(), "getRespuesta"), [null]));
+    print_r(json_encode(servicioApi::getInstance()->setAcceso($_SERVER['REQUEST_METHOD'])));
 
 ?>

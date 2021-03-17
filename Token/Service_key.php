@@ -7,7 +7,7 @@
     }
     interface Metodos{
         const token_metodos = array(
-            "saludar" => '$2y$09$i1x9DkntoU2S0i9MdbB3wO8QfnEBdObkQQ9tXLYPZW.D9YHLe8PZW'
+            "saludar" => '$2y$12$e/FuS0461cTjQ1DU9XqEmerkOWF0oziDrjQwE8U/9SBou86M9ka2m'
         );
     } 
 
