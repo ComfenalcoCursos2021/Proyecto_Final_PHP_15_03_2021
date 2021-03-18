@@ -38,7 +38,7 @@
             ciclo:
             if(count($i)){
                 $opciones = [
-                    'cost' => rand(9,13),
+                    'cost' => rand(5,10),
                 ];
                 $key = array_shift($i);
                 $cadena[$key] = (array) ["Marca" =>$Token[$key], "Token" => password_hash($Token[$key], PASSWORD_BCRYPT , $opciones)];
