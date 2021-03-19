@@ -1,14 +1,17 @@
 <?php
 
     class Service_index implements Mensajes,Plantilla{
-        static $serviceIndex;
+        static $serviceIndex; 
         public $plantilla;
+        public function __construct(){
+            $this->plantilla['url'] = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['HTTP_HOST']."/".explode("/", $_SERVER['REQUEST_URI'])[1]."/";
+        }
         static public function getInstance(){
             if(!(self::$serviceIndex instanceof self)){
                 self::$serviceIndex = new Service_index();
             }
             return self::$serviceIndex; 
-        }
+        } 
         public function nombreMenu(){
             $this->plantilla = <<<FIN
             <span class="font-weight-bold">{$this::service['NombreMenu']['PrimerNombre']}</span> {$this::service['NombreMenu']['SegundoNombre']}
@@ -21,14 +24,14 @@ FIN;
             foreach ($this::service['Menus']['PC'] as $key => $value) {
                 $this->plantilla['PC'] .= <<<FIN
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{$value}">{$key}</a>
+                        <a class="nav-link text-light" href="{$this->plantilla['url']}{$value}">{$key}</a>
                     </li>
 FIN;
             }
             foreach ($this::service['Menus']['Movil'] as $key => $value) {
                 $this->plantilla['Movil'] .= <<<FIN
                     <li class="mb-5">
-                        <a href="{$value}" class="text-decoration-none display-4 text-light">{$key}</a>
+                        <a href="{$this->plantilla['url']}{$value}" class="text-decoration-none display-4 text-light">{$key}</a>
                     </li>
 FIN;
             }
@@ -51,7 +54,7 @@ FIN;
                         break;
                     case 'Ver Mas':
                         $this->plantilla['Section'] .= <<<FIN
-                            <a href="{$value}" class="btn btn-primary">{$key}</a>
+                            <a href="{$this->plantilla['url']}{$value}" class="btn btn-primary">{$key}</a>
 FIN;
                         break;
                     default:
